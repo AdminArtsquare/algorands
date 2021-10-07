@@ -1,0 +1,39 @@
+<html>
+    <head>
+        <script src="config.js"></script>
+        <script src="base.js"></script>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="pinata-ipfs.js"></script>
+        <script src="https://unpkg.com/algosdk@latest" ></script>
+        <script src="purestake-algo.js"></script>
+    </head>
+    <body>
+        <h1>ALGORAND SWAP ASA - NFT </h1>
+        <h4>It allows you to transfer an ASA in your possession to another address.</h4>
+        <h4>Before an account can receive a specific asset it must opt-in to receive it.</h4>
+        <h4>An opt-in transaction places an asset holding of 0 into the account and increases its minimum balance by 100,000 microAlgos.</h4><hr>
+        <table>
+            <tr>
+                <th> <label>ASSET ID</label> </th>
+                <th> <input class="input" id="asset_id" placeholder="32074654" ></label> </th>
+            </tr>
+            <tr>
+                <th> <label>TO ADDRESS</label> </th>
+                <th> <input class="input" id="to_address" placeholder="T563HZG3524DV6CHJYL4NDA2HFYZ2WJKOTRD32SSA5MHR4WEDW4VT7PVQI" ></label> </th>
+            </tr>
+        </table>
+        <br>
+        <button id="btn_swap">SWAP ASA NFT</button><br><br>
+        <textarea readonly id="textarea" ></textarea>
+    </body>
+</html>
+<style>
+    textarea {
+        resize: none;
+        height: 300px;
+        width: 800px;
+    }
+    .input{
+        width: 550px;
+    }
+</style>
