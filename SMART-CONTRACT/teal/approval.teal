@@ -33,11 +33,6 @@ global GroupSize
 int 1
 ==
 assert
-byte "Admin"
-app_global_get
-txn Sender
-==
-assert
 byte "AvailableShares"
 byte "AvailableShares"
 app_global_get
@@ -55,11 +50,6 @@ return
 main_l9:
 global GroupSize
 int 1
-==
-assert
-byte "Admin"
-app_global_get
-txn Sender
 ==
 assert
 byte "AvailableShares"
@@ -98,7 +88,7 @@ app_global_put
 int 1
 return
 main_l11:
-int 0
+int 1
 return
 main_l12:
 int 0
@@ -107,5 +97,10 @@ main_l13:
 int 0
 return
 main_l14:
-int 0
+byte "Admin"
+app_global_get
+txn Sender
+==
+assert
+int 1
 return

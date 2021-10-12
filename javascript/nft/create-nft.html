@@ -1,16 +1,16 @@
 <html>
     <head>
-        <script src="config.js"></script>
-        <script src="base.js"></script>
+        <script src="../config.js"></script>
+        <script src="../base.js"></script>
         <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
-        <script src="pinata-ipfs.js"></script>
+        <script src="../pinata-ipfs.js"></script>
         <script src="https://unpkg.com/algosdk@latest" ></script>
-        <script src="purestake-algo.js"></script>
+        <script src="../purestake-algo.js"></script>
     </head>
     <body>
         <h1>ALGORAND NFT </h1><hr>
-        <h4>It allows to generate an ipfs hash of an image using the services of Pinata and to create an associated ASA fractional NFT.</h4>
-        <h4>A fractional NFT is a unique asset that has been divided into multiple, equal shares.</h4><hr>
+        <h4>It allows to generate an ipfs hash of an image using the services of Pinata and to create an associated ASA NFT.</h4>
+        <h4>The generated NFTs DO NOT support the ARC-3 convention</h4><hr>
         <form id="form" >
             <label for="img">Select an image:</label>
             <input type="file" id="img" name="img" accept="image/*">
@@ -40,9 +40,10 @@
                 <th> <label>SHORT DESCRIPTION</label> </th>
                 <th> <input class="input" id="short_descr" disabled placeholder="The picture of the most beautiful cat in the world."/> </th>
             </tr>
+            
         </table>
         <br>
-        <button disabled id="btn_nft_fract">CREATE ASA NFT</button><br><br>
+        <button disabled id="btn_nft">CREATE ASA NFT</button><br><br>
         <label style="display: none;" id="hash_txn"></label>
         <textarea readonly id="textarea" ></textarea>
     </body>

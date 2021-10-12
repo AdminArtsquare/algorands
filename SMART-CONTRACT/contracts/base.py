@@ -1,5 +1,6 @@
 import base64
 from algosdk import account, mnemonic, logic
+import algosdk
 from algosdk.future import transaction
 
 # helper function that formats global state for printing
@@ -41,7 +42,7 @@ def get_private_key_from_mnemonic(mn) :
     return private_key
 
 # helper function that waits for a given txid to be confirmed by the network
-def wait_for_confirmation(client, transaction_id, timeout):
+def wait_for_confirmation(client, transaction_id):
     """
     Wait until the transaction is confirmed or rejected, or until 'timeout'
     number of rounds have passed.
@@ -52,7 +53,7 @@ def wait_for_confirmation(client, transaction_id, timeout):
         dict: pending transaction information, or throws an error if the transaction
             is not confirmed or rejected in the next timeout rounds
     """
-    timeout = 20
+    timeout = 10
     start_round = client.status()["last-round"] + 1
     current_round = start_round
 
@@ -93,14 +94,18 @@ def create_app(client, private_key, approval_program, clear_program, global_sche
     client.send_transactions([signed_txn])
 
     # await confirmation
-    wait_for_confirmation(client, tx_id, 5)
+    wait_for_confirmation(client, tx_id)
 
     # display results
     transaction_response = client.pending_transaction_info(tx_id)
     app_id = transaction_response['application-index']
     print("Created new app-id:", app_id)
 
-    return app_id
+    e = algosdk.encoding
+    app_address = e.encode_address(e.checksum(bytes(app_id) + (1).to_bytes(8, 'big')))
+    print("Application address:", app_address)
+
+    return [ app_id, app_address]
 
 # call application
 def call_app(client, private_key, index, app_args) : 
@@ -121,6 +126,56 @@ def call_app(client, private_key, index, app_args) :
     client.send_transactions([signed_txn])
 
     # await confirmation
-    wait_for_confirmation(client, tx_id, 5)
+    wait_for_confirmation(client, tx_id)
 
     print("Application called")
+
+# delete application
+def delete_app(client, private_key, index):
+    # declare sender
+    sender = account.address_from_private_key(private_key)
+
+    # get node suggested parameters
+    params = client.suggested_params()
+
+    # create unsigned transaction
+    txn = transaction.ApplicationDeleteTxn(sender, params, index)
+
+    # sign transaction
+    signed_txn = txn.sign(private_key)
+    tx_id = signed_txn.transaction.get_txid()
+
+    # send transaction
+    client.send_transactions([signed_txn])
+
+    # await confirmation
+    wait_for_confirmation(client, tx_id)
+
+    # display results
+    transaction_response = client.pending_transaction_info(tx_id)
+    print("Deleted app-id:", transaction_response["txn"]["txn"]["apid"])
+
+# payment transaction
+def payment_app(client, private_key, app_address, amount):
+    # declare sender
+    sender = account.address_from_private_key(private_key)
+
+    # get node suggested parameters
+    params = client.suggested_params()
+
+    # create payment transaction
+    txn = transaction.PaymentTxn(sender, params, app_address, amount)
+    
+    # sign transaction
+    signed_txn = txn.sign(private_key)
+    tx_id = signed_txn.transaction.get_txid()
+
+    # send transaction
+    client.send_transactions([signed_txn])
+
+    # await confirmation
+    wait_for_confirmation(client, tx_id)
+
+    # display results
+    transaction_response = client.pending_transaction_info(tx_id)
+    print("Payment transaction:", transaction_response["txn"]["txn"])
