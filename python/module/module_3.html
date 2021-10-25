@@ -1,0 +1,106 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="../base.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="../base.js"></script>
+    </head>
+    <body>
+        <h1>Algorand ASA NFT ARC-3</h1>
+        <h4>This module generates an NFT asset on an algorithm network according to the arc-3 convention.</h4>
+        <h4>For more information:
+            <a href="https://github.com/algorandfoundation/ARCs/blob/main/ARCs/arc-0003.md">
+                Algorand Standard Asset Parameters Conventions for Fungible and Non-Fungible Tokens
+            </a>
+        </h4>
+    
+        <form id="form">
+            <div>
+                <label for="name">Image:</label>
+                <input class="input" type="file" id="img" name="static_file" accept="image/*">
+                <img id="image" src=""/>
+            </div>
+        
+            <div>
+                <label for="unit_name">Unit Name:</label>
+                <input type="text" id="unit_name" name="unit_name" placeholder="DANC">
+            </div>
+
+            <div>
+                <label for="asset_name">Asset Name:</label>
+                <input type="text" id="asset_name" name="asset_name" placeholder="Dancing Cat">
+            </div>
+
+            <div>
+                <label for="asset_name">Description:</label>
+                <input type="text" id="description" name="description" placeholder="This asset is used for the dancing cat.">
+            </div>
+        
+            <div>
+                <label>Nft Type:</label>
+                
+                <input class="radio" type="radio" name="nft_type" value="pure">
+                <label class="lbl" >Pure NFT</label>
+                
+                <input class="radio" type="radio" name="nft_type" value="fractional">
+                <label class="lbl" >Fractional NFT</label>
+            </div>
+        
+            <div>
+                <label for="total">Total:</label>
+                <input type="number" min="0" id="total" name="total">
+            </div>
+
+            <div>
+                <textarea readonly id="container" name="container"></textarea>
+            </div>
+
+            <div class="button">
+                <button type="submit">Create NFT</button>
+            </div>
+        </form>
+    </body>
+    <script>
+        $(document).ready(function(e) {
+            $("#total").attr("disabled", true);
+            $('#form').on('submit', async function(e) {
+                e.preventDefault();
+                if(allDataFilled()){
+                    // get form
+                    var form = $("#form")[0];
+                    // get data
+                    var data = { }
+                    data["unit_name"] = $("#unit_name").val();
+                    data["asset_name"] = $("#asset_name").val();
+                    data["total"] = $("#total").val();
+                    data["description"] = $("#description").val();
+                    // call api
+                    await callApi(form, "createAssetNFT", data);
+                }else{
+                    alert("not_all_data_filled"); 
+                }
+            });
+            $('input[type=radio][name=nft_type]').change(function(){
+                if(this.value == "pure"){
+                    $("#total").val("1");
+                    $("#total").attr("disabled", true);
+                }else{
+                    $("#total").attr("disabled", false);
+                }
+            })
+            $('input[type=file][name=static_file]').change(function(){
+                if(this.value != ""){
+                    var files = this.files;
+                    if(files && files[0]){
+                        var reader  = new FileReader();
+                        reader.onload = function(e)  {
+                            $("#image").attr("src", e.target.result);
+                        }
+                        reader.readAsDataURL(files[0]);
+                    }
+                }else{
+                    $("#image").attr("src", null);
+                }
+            })
+        });
+    </script>
+</html>
