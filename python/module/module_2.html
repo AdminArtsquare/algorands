@@ -1,0 +1,36 @@
+<html>
+    <head>
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="../base.js"></script>
+    </head>
+    <body>
+        <h1>[#2] Module for ARC-3 json metadata generator</h1>
+        <h2>This module allows to generate the metadata file in json of a file following the ARC-3 convention for the generation of ASA NFT in Algorand.</h2>
+        <h3>The creation takes place through an API in Python that receives a file as a parameter and create the metadata file json.</h3><hr/>
+        <form id="form" >
+            <label for="img">Select an image:</label>
+            <input type="file" id="img" name="static_file" accept="image/*">
+            <input id="form_submit" type="submit">
+        </form>
+        <textarea readonly id="container"></textarea>
+    </body>
+    <script>
+        $(document).ready(function(e) {
+            $('#form').on('submit', async function(e) {
+                e.preventDefault();
+                data = { }
+                data['name'] = "'Test Nft23'";
+                data['decimals'] = 0;
+                data['description'] = "Description of test nft from ArtSquare #2.";
+                await callApi($( "#form" )[0], "createMetadataJson", data);
+            });
+        });
+    </script>
+    <style>
+        textarea {
+            resize: none;
+            height: 300px;
+            width: 800px;
+        }
+    </style>
+</html>
