@@ -55,7 +55,7 @@ class CreateMetadataJson(Resource):
             response["exception"] = "exception in CreateMetadataJson"
         return response
     pass
-#
+# class to manage the creation of an NFT asset according to the arc3 convention
 class CreateAssetNFT(Resource):
     def post(self):
         response = { }
@@ -87,12 +87,25 @@ class CreateAssetNFT(Resource):
             response["exception"] = "exception in CreateAssetNFT"
         return response
     pass
+#
+class OptInAssetNFT(Resource):
+    def post(self):
+        response = { }
+        try:
+            asset_id = request.form['asset_id']
+            response = purestakeAlgorand.optInAssetNFT(asset_id)
+        except:
+            response["exception"] = "exception"
+        return response
+    pass
 # entry point for generating the file hash
 api.add_resource(PinFileToIPFS, '/pinFileToIPFS')
 # entry point for generating the metadata json
 api.add_resource(CreateMetadataJson, '/createMetadataJson')
-# 
+# entry point for generating the asset nft
 api.add_resource(CreateAssetNFT, '/createAssetNFT')
+#
+api.add_resource(OptInAssetNFT, "/optInAssetNFT");
 # run app
 if __name__ == '__main__':
     app.run()
