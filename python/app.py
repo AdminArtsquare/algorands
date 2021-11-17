@@ -98,6 +98,19 @@ class OptInAssetNFT(Resource):
             response["exception"] = "exception"
         return response
     pass
+#
+class TransferAssetNFT(Resource):
+    def post(self):
+        response = { }
+        try:
+            asset_id = request.form['asset_id']
+            amount = request.form['amount']
+            receiver_address = request.form['receiver_address']
+            response = purestakeAlgorand.transferAssetNFT(asset_id, amount, receiver_address)
+        except:
+            response["exception"] = "exception"
+        return response
+    pass
 # entry point for generating the file hash
 api.add_resource(PinFileToIPFS, '/pinFileToIPFS')
 # entry point for generating the metadata json
@@ -105,7 +118,9 @@ api.add_resource(CreateMetadataJson, '/createMetadataJson')
 # entry point for generating the asset nft
 api.add_resource(CreateAssetNFT, '/createAssetNFT')
 #
-api.add_resource(OptInAssetNFT, "/optInAssetNFT");
+api.add_resource(OptInAssetNFT, "/optInAssetNFT")
+#
+api.add_resource(TransferAssetNFT, "/transferAssetNFT")
 # run app
 if __name__ == '__main__':
     app.run()
