@@ -1,1 +1,10 @@
-account.txt
+*.txt
+*.DS_Store
+./.DS_Store
+*.teal
+/python/smart-contract/backup_commenti_ita/*
+/python/algo_index.py
+/python/smart-contract/conf.py
+/python/conf.py
+/python/smart-contract/voting/conf.py
+/python/smart-contract/voting/clear.py
