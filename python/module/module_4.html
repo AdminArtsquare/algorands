@@ -1,0 +1,48 @@
+<html>
+    <head>
+        <link rel="stylesheet" href="../base.css">
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+        <script src="../base.js"></script>
+    </head>
+    <body>
+        <h1>Algorand ASA NFT opt-in</h1>
+        <h4>This module allows you to explicitly enable a wallet to receive an NFT asset. This sends "0" of the asset to yourself.</h4>
+    
+        <form id="form">
+
+
+
+            <div>
+                <label for="unit_name">Asset ID:</label>
+                <input type="text" id="asset_id" name="asset_id" placeholder="408947">
+            </div>
+
+            <div>
+                <textarea readonly id="container" name="container"></textarea>
+            </div>
+
+            <div class="button">
+                <button type="submit">Opt-in Asset NFT</button>
+            </div>
+        </form>
+    </body>
+    <script>
+        $(document).ready(function(e) {
+            $("#total").attr("disabled", true);
+            $('#form').on('submit', async function(e) {
+                e.preventDefault();
+                if(true){
+                    // get form
+                    var form = $("#form")[0];
+                    // get data
+                    var data = { }
+                    data["asset_id"] = $("#asset_id").val();
+                    // call api
+                    await callApi(form, "optInAssetNFT", data);
+                }else{
+                    alert("not_all_data_filled"); 
+                }
+            });
+        });
+    </script>
+</html>

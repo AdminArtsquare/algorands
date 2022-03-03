@@ -1,6 +1,7 @@
 # library
 import hashlib
 import json
+from algosdk.future.transaction import AssetTransferTxn
 from algosdk.v2client import algod
 from algosdk import transaction, mnemonic
 from conf import *
@@ -10,6 +11,7 @@ class PurestakeAlgorand:
     # constructor
     def __init__(self) -> None:
         self._algod_client = algod.AlgodClient(PURESTAKE_API_KEY, ALGO_SERVER, PURESTAKE_HEADERS)
+        self._algod_indexer = algod.AlgodClient(PURESTAKE_API_KEY, ALGO_INDEXER, PURESTAKE_HEADERS)
     # method to generate the metadata json file
     def createMetadataJson(self, name, decimals, description, hash, file):
         response = { }
@@ -96,3 +98,101 @@ class PurestakeAlgorand:
             print(e)
 
         return "error"
+    #
+    def optInAssetNFT(self,asset_id):
+        try:
+            # get suggested params
+            params = self._algod_client.suggested_params()
+
+            ########################################################
+            sender = CREATOR_ADDRESS
+            private_key  = mnemonic.to_private_key(CREATOR_MNEMONIC)
+            ########################################################
+
+            address = sender 
+            
+            # check that we are not already in possession of the asset
+            account_info = self._algod_client.account_info(address)
+            holding = None
+            idx = 0
+            for my_account_info in account_info['assets']:
+                scrutinized_asset = account_info['assets'][idx]
+                idx = idx + 1    
+                if (scrutinized_asset['asset-id'] == int(asset_id)):
+                    holding = True
+                    break
+
+            if not holding:
+                txn = AssetTransferTxn(
+                    address,
+                    params,
+                    address,
+                    0,
+                    asset_id
+                )
+
+                # sign transaction with private key(sender's private key)
+                signedTxn = txn.sign(private_key)
+                # send the transaction and get the id
+                txId = self._algod_client.send_transaction(signedTxn)
+                # wait for transaction confirmation
+                wait_for_tx_confirmation(self._algod_client, txId)
+
+                return True
+
+            return False
+        except Exception as e:
+            print(e)
+
+        return False
+    #
+    def transferAssetNFT(self,asset_id,amount, receiver_address):
+        try:
+            # get suggested params
+            params = self._algod_client.suggested_params()
+
+            ########################################################
+            sender = CREATOR_ADDRESS
+            private_key  = mnemonic.to_private_key(CREATOR_MNEMONIC)
+            ########################################################
+
+            address = sender 
+            
+            # check that we are not already in possession of the asset
+            account_info = self._algod_client.account_info(address)
+            holding = False
+            amount_ok = False
+            idx = 0
+            for my_account_info in account_info['assets']:
+                scrutinized_asset = account_info['assets'][idx]
+                idx = idx + 1    
+                # check that it is in possession of the asset and has the necessary quantity to transfer
+                if (scrutinized_asset['asset-id'] == int(asset_id) &
+                    scrutinized_asset['amount'] >= int(amount)):
+                    holding = True
+                    amount_ok = True
+                    break
+            # conditions ok
+            if holding and amount_ok:
+                txn = AssetTransferTxn(
+                    address,
+                    params,
+                    receiver_address,
+                    amount,
+                    asset_id
+                )
+
+                # sign transaction with private key(sender's private key)
+                signedTxn = txn.sign(private_key)
+                # send the transaction and get the id
+                txId = self._algod_client.send_transaction(signedTxn)
+                # wait for transaction confirmation
+                wait_for_tx_confirmation(self._algod_client, txId)
+
+                return True
+
+            return False
+        except Exception as e:
+            print(e)
+
+        return False

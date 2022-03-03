@@ -1,0 +1,25 @@
+# libs
+import typing
+# custom
+Headers = typing.Dict[str, str]
+OptionsDict = typing.Dict[str, typing.Any]
+# Algorand Purestake configuration
+PURESTAKE_API_KEY = "put_your_purestake_api_key_here"
+PURESTAKE_HEADERS = { "X-API-KEY": PURESTAKE_API_KEY }
+PORT = ""
+DEBUG = True
+if DEBUG:
+    SERVER = "testnet"
+    LEDGER_NETWORK = "TestNet"
+else:
+    SERVER = "mainnet"
+    LEDGER_NETWORK = "MainNet"
+ALGO_SERVER = "https://"+SERVER+"-algorand.api.purestake.io/ps2"
+ALGO_INDEXER = "https://"+SERVER+"-algorand.api.purestake.io/idx2"
+# ONLY FOR TEST
+# CREATOR USER
+CREATOR_MNEMONIC = "put_your_creator_user_mnemonic"
+CREATOR_ADDRESS = "put_your_creator_address"
+# TEST USER
+TEST_MNEMONIC = "put_your_test_user_mnemonic"
+TEST_ADDRESS = "put_your_test_user_address"
